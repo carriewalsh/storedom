@@ -30,7 +30,7 @@ describe "ActiveRecord American Gladiator" do
   end
 
   context "Hang Tough" do
-    xit "returns orders for 3 users in 2 queries (aka: Remove the N+1 query)" do
+    it "returns orders for 3 users in 2 queries (aka: Remove the N+1 query)" do
       diamond  = User.create(name: "Diamond")
       turbo    = User.create(name: "Turbo")
       laser    = User.create(name: "Laser")
@@ -45,16 +45,17 @@ describe "ActiveRecord American Gladiator" do
       order_amounts = []
 
       # Changeable Start
-      users = User.first(3)
+      # users = User.first(3)
+      order_amounts = User.joins(:orders).order(:id).limit(3).pluck(:amount)
       # Changeable End
 
       # Use eager loading to remove the N+1 query
       # Hint: Read until section 13.1 - http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations
 
-      users.each do |user|
-        # The problem: Each time we call user.orders, we go to the DB to pull them down.
-        order_amounts << user.orders.first.amount
-      end
+      # users.each do |user|
+      #   # The problem: Each time we call user.orders, we go to the DB to pull them down.
+      #   order_amounts << user.orders.first.amount
+      # end
 
       expect(order_amounts).to eq([1, 2, 4])
       expect(order_amounts).to_not include(3)

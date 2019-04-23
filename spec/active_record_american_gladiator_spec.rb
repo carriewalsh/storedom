@@ -46,7 +46,7 @@ describe "ActiveRecord American Gladiator" do
 
       # Changeable Start
       # users = User.first(3)
-      order_amounts = User.joins(:orders).order(:id).limit(3).pluck(:amount)
+      order_amounts = User.includes(:orders).order(:id).limit(3).pluck(:amount)
       # Changeable End
 
       # Use eager loading to remove the N+1 query
@@ -124,7 +124,7 @@ describe "ActiveRecord American Gladiator" do
 
   context "Atlasphere" do
     # This one is challenging.
-    xit "returns most popular items" do
+    it "returns most popular items" do
       scoring_pod = Item.create(name: "Scoring Pod")
       lights      = Item.create(name: "Lights")
       smoke       = Item.create(name: "Smoke")
@@ -134,6 +134,7 @@ describe "ActiveRecord American Gladiator" do
       Order.create(items: [lights, lights, lights])
 
       # Changeable Start
+      binding.pry
       items_with_count = Hash.new(0)
 
       Order.all.each do |order|
